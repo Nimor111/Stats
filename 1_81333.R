@@ -50,4 +50,10 @@ sum(is.na(survey$Sex))
 # removes NA from cols
 number_of_men = sum(survey$Sex == 'Male', na.rm = T)
 
-men_smokers = sum(survey$Sex == 'Male' && survey$Smoke != 'Never' )
+# AND operator is &, not &&
+men_smokers = sum(survey$Sex == 'Male' & survey$Smoke != 'Never', na.rm=T )
+
+average_male_height = mean(survey$Height, na.rm=T)
+
+six_youngest_students = head(survey[order(survey$Age),], n=6)
+height_and_age = six_youngest_students[,c('Height', 'Sex')]
