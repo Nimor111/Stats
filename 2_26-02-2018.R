@@ -33,8 +33,8 @@ p4 = prop.table(t2, 1)
 # problem 2
 y = factor(Smoke, levels=levels(Smoke)[c(2, 3, 4, 1)])
 t = table(y)
-# pie(t, col=c('green', 'red', 'blue' ,'orange'), main='SMOKERS')
-# barplot(t, col=c('green', 'red', 'blue', 'orange'))
+pie(t, col=c('green', 'red', 'blue' ,'orange'), main='SMOKERS')
+barplot(t, col=c('green', 'red', 'blue', 'orange'))
 
 t2 = table(Sex, y)
 barplot(t2, col=c('green', 'red'), legend=levels(Sex), beside=T)
@@ -55,7 +55,7 @@ s = summary(Height)
 boxplot(Height, horizontal = T)
 
 boxplot(Height~Sex, horizontal=T)
-# boxplot(Height[Sex=='Male'], Height[Sex=='Female'], horizontal = T)
+boxplot(Height[Sex=='Male'], Height[Sex=='Female'], horizontal = T)
 
 # removes 0.1 from both sides of the interval, if we have outlier values it will
 # effectively ignore them
@@ -63,3 +63,13 @@ boxplot(Height~Sex, horizontal=T)
 # type h in console for more information about it
 h = hist(Height)
 mean_without_outliers = mean(Height, na.rm=T, trim=0.1)
+
+# gets out frequency density, e.g. frequency / class width
+p = hist(Pulse, freq=T)
+
+# cuts the column values into the given intervals
+Age.cut <- cut(Age, c(-Inf, 20, 25, +Inf))
+# without xaxt="n" it will show mathematical visualizations of the intervals
+plot <- barplot(table(Age.cut), main="Age", xaxt="n")
+# set names of x axis
+axis(1, at=plot, labels=c('< 20', '20-25', '> 25'))
