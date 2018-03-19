@@ -44,13 +44,11 @@ women <- Height[Sex == 'Female' & !is.na(Height) & !is.na(Sex)]
 # boxplot(men, horizontal = T)
 # how wide it is - dispersion
 # line - median
-boxplot(men, female, horizontal = T)
+boxplot(men, women, horizontal = T)
 
 # histogram
 h <- hist(Height, freq=T)
 # TODO why does this not work
 br <- h$breaks
-new_br <- c(br[1:3], 162.5, br[4:8])
-# hist(Height, breaks = new_br)
-
-lines(density(Height))
+new_br <- c(br[1:3], 162.5, c(br[4:8], 200))
+h <- hist(Height, breaks = new_br)
