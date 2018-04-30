@@ -1,0 +1,148 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Comparing means of two normally generated datasets.
+```{r}
+x <- rnorm(20, 2, 2)
+y <- rnorm(20, 3, 2)
+
+boxplot(x, y, horizontal = T)
+```
+
+Calculate means
+```{r}
+mx <- mean(x)
+my <- mean(y)
+```
+
+Calculate variance
+```{r}
+dx <- var(x)
+dy <- var(y)
+```
+
+Formula
+```{r}
+d <- (19*dx + 19*dy) / 38
+```
+
+```{r}
+t <- (mx - my) / sqrt(d/10) 
+```
+
+t is a student distribution with degrees of freedom 38 ( this time )
+Our hypothesis being mx = my
+Our alternative being mx < my
+
+Calculate p value
+```{r}
+pt(t, 38)
+```
+
+This was the academic way. Now with the all mighty function:
+```{r}
+t.test(x, y, var.equal = T, alternative = "less")
+```
+We can use a parameter paired of t.test as well - if the data is paired.
+
+# Problems
+### Problem 1:
+
+Smokers yes for increasing cigarettes price:
+71
+All smokers - 195
+
+Non-smokers yes for the same question:
+351
+All non-smokers - 605
+Is both groups' opinion the same?
+
+We use prop.test here.
+Our hypothesis being: mx = my ( the opinions are the same )
+Our alternative being: mx != my ( the opinions are different )
+Will check if proportion 71/351 is equal to 351/605
+
+```{r}
+prop.test(c(71, 351), c(195, 605))
+```
+The p value is quite small here - the hypothesis cannot be true. We accept the alternative.
+
+### Problem 2
+Hypothesis: mx = my ( not better off than the ones taking placebo stuff)
+Alternative: mx < my ( worse off than the placebo guys )
+```{r}
+new_medicament <- c(15, 10, 13, 7, 9, 8, 21, 9, 14, 8)
+placebo <- c(15, 14, 12, 8, 14, 10, 7, 16, 10, 15, 12)
+
+boxplot(new_medicament, placebo)
+shapiro.test(new_medicament)
+
+t.test(new_medicament, placebo, alternative = "less")
+```
+p value = 0.34 -> we accept the hypothesis
+
+### Problem 3
+```{r}
+first_radar <- c(70, 85, 63, 54, 65, 80, 75, 95, 52, 55)
+second_radar <- c(72, 86, 62, 55, 63, 80, 78, 90, 53, 57)
+
+boxplot(first_radar, second_radar)
+qqnorm(first_radar)
+qqline(first_radar)
+```
+They are normally distributed. (sort of) So we will use t.test. 
+Data is paired as well ( we monitor the same events twice)
+Hypothesis: Both radars are equal( mfirst_radar = msecond_radar)
+Alternative: Radars are different
+```{r}
+t.test(first_radar, second_radar, paired=T, var.equal = T)
+```
+P value is very high - we accept the hypothesis.
+
+## Problem 4
+```{r}
+library(UsingR)
+
+attach(ewr)
+
+shapiro.test(AA)
+shapiro.test(NW)
+```
+Data is not normal. So we will use wilcox test.
+Hypothesis they are equal, alternative they aren't.
+
+```{r}
+wilcox.test(AA, NW)
+```
+P value is large enough - we can't deny the hypothesis. 
+
+## Problem 5
+https://www.itl.nist.gov/div898/handbook/eda/section3/eda3531.htm
+```{r}
+shapiro.test(m)
+shapiro.test(n)
+
+wilcox.test(m, n)
+```
+For t.test we remove all the rows with a -999 value in them and they will be normally distributed.
+
+## Problem 6
+Diodes
+```{r}
+first_diode <- c( 39, 50, 61, 67, 40, 40, 54)
+second_diode <- c( 60, 53, 42, 41, 40, 54, 63, 69 )
+
+boxplot(first_diode, second_diode)
+
+shapiro.test(first_diode)
+shapiro.test(second_diode)
+
+qqnorm(first_diode)
+qqline(first_diode)
+
+t.test(first_diode, second_diode)
+```
+P value is big, we accept hypothesis.
+Shapiro tells us they are sort of normally distributed.
