@@ -1,0 +1,157 @@
+---
+title: "R Homework 1"
+author: "Георги Божинов 81333 курс 3 група 1"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r, message=FALSE}
+library(UsingR)
+attach(Cars93)
+```
+
+Задача 1:
+
+Модел на петте най-скъпи коли
+```{r}
+mp <- data.frame(Price, Model)
+head(mp[order(-mp$Price),], 5)
+```
+
+Брой цилиндри на най-мощните спортни коли
+```{r}
+sport_cars <- Cars93[Type=="Sporty",]
+cp <- data.frame(sport_cars$Horsepower, sport_cars$Cylinders)
+head(cp[order(-cp$sport_cars.Horsepower),], 3)
+```
+
+Мили за галон -> Литри за 100 километра
+Градско:
+````{r}
+282.48/MPG.city
+```
+
+Магистрала:
+```{r}
+282.48/MPG.highway
+```
+
+Връзка между брой цилиндри и мили за галон
+```{r}
+plot(Cylinders, MPG.city, xlab='Cylinders', ylab='MPG.city')
+
+plot(Cylinders, MPG.highway, xlab='Cylinders', ylab='MPG.highway')
+```
+
+Виждаме, че колкото повече цилиндри има кола, толкова по-малко мили за галон може да измине. И съответно толкова повече литри изхабява за 100 километра.
+
+Връзка между обем на двигателя и мощността на колата.
+Намираме и outliers с функция identify.
+
+```{r}
+plot(EngineSize, Horsepower)
+abline(lm(Horsepower~EngineSize))
+p <- identify(EngineSize, Horsepower)
+```
+
+Корелация с outliers, изглежда като линеен модел, тъй като корелацията е > 0.5.
+
+```{r}
+cor(Horsepower, EngineSize)
+```
+
+Махаме outliers ( емпирично ).
+
+```{r}
+p <- c(5, 6, 8, 10, 11, 17, 18, 19, 28, 38, 48, 50, 51, 52, 57, 59, 63)
+Horsepower2 <- Horsepower[-c(p)]
+EngineSize2 <- EngineSize[-c(p)]
+```
+
+Графика без outliers.
+
+```{r}
+plot(EngineSize2, Horsepower2)
+abline(lm(Horsepower2~EngineSize2))
+```
+
+Доближаваме се до линеен модел с по-добра корелация.
+
+```{r}
+cor(Horsepower2, EngineSize2)
+```
+
+Извод: Махането на outliers увеличава корелацията. Моделът се доближава все повече до линеен.
+```{r}
+cor(Horsepower, EngineSize, method = "spearman")
+```
+
+Сравняваме корелацията с метод, който изпълнява по-строга корелация. Почти същата е като "емпиричната".
+
+```{r}
+qqplot(Passengers, Price)
+```
+
+Извод: Пътниците са управляваща група. От графиката виждаме за кои ценови интервали по колко пътника може да побере колата.
+
+Задача 2:
+
+Фак. номер 81333
+```{r}
+x <- runif(50, 0, 4)
+y <- rexp(50, 1/4)
+
+boxplot(x, y, horizontal = T)
+```
+
+От резултатите виждаме, че 50 наблюдения не винаги стигат, за да се прояват характеристиките на разпределението. Равномерното разпределение не винаги изглежда съвсем симетрично, а експоненциалното не винаги е с голяма дясна опашка. Функциите се държат добре в повечето случаи, но 100 наблюдения биха били по-добър критерий.
+
+```{r}
+x <- rexp(50, 1/4)
+hist(x, probability = T)
+# Empirical density
+lines(density(x), col="red")
+# Theoretical density
+lines(sort(x), dexp(sort(x), rate=1/4), col="blue", lty=2, lwd=2)
+```
+
+Тук отново се вижда, че наблюденията са малко. Има голямо разминаваме между плътностите.
+
+Задача 3:
+
+```{r}
+prob_of_sum <- function(k, t, n = 100) {
+  k_count <- 0
+  for (i in 1:n) {
+    x <- sample(0:t, 4, replace=T)
+    if(x[1] + 2*x[2] + 3*x[3] + x[4] == k) {
+      k_count <- k_count + 1
+    }
+  }
+  
+  return(k_count/n)
+}
+
+
+experiments <- c()
+probabilities <- c()
+
+t <- sample(1:10, 1)
+k <- sample(10:30, 1)
+
+for (i in seq(100, 1000, 100)) {
+  experiments <- append(experiments, i)
+  
+  prob <- prob_of_sum(k, t, i)
+  
+  probabilities <- append(probabilities, prob)
+}
+
+qqplot(experiments, probabilities)
+```
+
+Правим 10 последователни експерименти от 100 до 1000 със стъпка 100 и чертаем графика за вероятността да получим съответната сума. Сравняваме го с теоретично разпределение чрез qqplot.

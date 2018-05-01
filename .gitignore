@@ -1,5 +1,12 @@
+# R specific files
 .RData
 .Rhistory
 
-Homework1/
-hw1*
+# Generated files from R notebooks
+*.docx
+*.html
+*.nb.html
+*.pdf
+*.fls
+*.aux
+*.out
