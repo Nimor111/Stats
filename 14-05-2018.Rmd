@@ -1,0 +1,109 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+Chi-square criterion for type of distribution
+
+X1...XN - random variables. Hypothesis: are they of distribution F, alternative - they aren't of distribution F.
+
+Problem 1:
+H0: p1 = p2 =... = p6 = 1/6
+H1: distr is not uniform
+
+n = 150
+
+Enter data:
+```{r}
+x <- c(22, 21, 22, 27, 22, 36)
+```
+Calculate t value ( t = sum((fi - n*pi) / n*pi) )
+Where fi is the amount of values in each interval
+pi - chance for the value to be in an interval
+here pi is 1/6 for each i
+```{r}
+t <- sum((x - 25)*(x - 25) / 25)
+```
+This is chi-squared with 5 degrees of freedom.
+We calculate the p-value.
+```{r}
+1 - pchisq(t, df=5)
+```
+P-value is big -> 0.24, so we accept the hypothesis.
+With a chance of 0.24 the distribution is uniform.
+
+There is a test for this
+```{r}
+chisq.test(x)
+```
+
+Problem 2
+
+In the first 200 digits of PI, are the nine digits uniformly distributed?
+```{r}
+library(UsingR)
+f <- pi2000[1:200]
+tf <- table(f)
+x <- c(19, 20, 24, 20, 22, 20, 15, 12, 25, 23)
+chisq.test(x)
+```
+P-value is big, so we accept the hypothesis.
+
+Problem 3
+
+Is this text in english? 
+1036 word text, x is data of occurrences of letters E,T,A,O,I,N
+p is the probabilities of each of these letters occurring in an english word.
+Last element of p is the sum of the prob of the other letters.
+
+```{r}
+x <- c(102, 108, 90, 95, 82, 40, 519)
+p <- c(0.127, 0.0956, 0.0817, 0.0751, 0.0697, 0.0675, 0.4834)
+#sum(x)
+#1036 - 517
+
+chisq.test(x, p=p)
+```
+p-value is small => we accept the alternative
+
+Problem 4
+
+Data for car crashes and consequences for people wearing seat belts and those not wearing them.
+
+Table is of type: 
+                No injury   Slight injury   Middle sized injury Heavy injury
+With seat belt      fij         
+Without seat belt   fij
+
+This is chi-squared criterion for independent variables. 
+
+```{r}
+x <- matrix(c(12813, 647, 359, 42, 65963, 4000, 2642, 303), ncol = 4, nrow = 2, byrow = T)
+
+chisq.test(x)
+```
+or
+```{r}
+z <- x[1,]
+n <- x[1,] + x[2,]
+prop.test(z, n)
+```
+p-value is small, so the variables are not independent, we accept the alternative.
+
+Problem 5:
+
+Quality of products by day of week: 
+          M  T  W  T  F
+Excellent 44 74 79 72 31
+Good      14 25 27 24 10
+Medium    15 20 20 23 9
+Bad       3 5 5 0 0
+
+```{r}
+x <- matrix(c(44, 74, 79, 72, 31, 14, 25, 27, 24, 10, 15, 20, 20, 23, 9, 3, 5, 5, 0, 0), nrow=4, ncol=5, byrow=T)
+
+chisq.test(x)
+```
+P-value is big, so we accept the hypothesis.
