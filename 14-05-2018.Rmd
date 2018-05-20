@@ -99,7 +99,7 @@ Quality of products by day of week:
 Excellent 44 74 79 72 31
 Good      14 25 27 24 10
 Medium    15 20 20 23 9
-Bad       3 5 5 0 0
+Bad       3  5  5  0  0
 
 ```{r}
 x <- matrix(c(44, 74, 79, 72, 31, 14, 25, 27, 24, 10, 15, 20, 20, 23, 9, 3, 5, 5, 0, 0), nrow=4, ncol=5, byrow=T)
