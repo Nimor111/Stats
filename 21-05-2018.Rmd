@@ -1,0 +1,152 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Linear regression
+
+```{r}
+x = runif(20, 1, 10)
+y = 2*x + 3 + rnorm(20, 0, 2)
+plot(x, y)
+```
+Linear model for data
+```{r}
+# y is a function of x
+l = lm(y ~ x)
+
+# The plots are 4, we can show the one we want with second arg of plot.
+plot(l, 1)
+
+# How much a point is far from the line
+l$residuals
+
+l$fitted.values
+```
+
+Now a bad model
+```{r}
+z = x * x + 1 + rnorm(20, 0, 2)
+plot(x, z)
+
+l2 = lm(z ~ x)
+abline(l2)
+
+# So not a good model, too big residuals, line is not horizontal
+plot(l2, 1)
+```
+
+Our favourite qqplot
+```{r}
+plot(l2, 2)
+
+plot(l, 2)
+```
+
+Now with data that is not a function of x
+```{r}
+w = runif(20, 1, 10)
+plot(x, w)
+
+l3 = lm(w ~ x)
+
+abline(l3)
+
+plot(l3, 1)
+plot(l3, 2)
+```
+
+Summary of linear model
+```{r}
+# Of good model
+summary(l)
+
+# Of bad model
+summary(l3)
+```
+
+Checking if beta 0 is equal to 2 in the first model
+H0: B1 = 2
+H1: B1 != 2
+
+```{r}
+sm = summary(l)
+t = (l$coefficients[2] - 2) / sm$coefficients['x', 'Std. Error']
+
+# calculate p value, 20 - 2 df
+pt(t, 18, lower.tail = F) * 2
+```
+Big p value, we can't decline hypothesis.
+
+```{r}
+sm = summary(l)
+sm$r.squared
+```
+
+## Problems
+
+#### Problem 1
+Y - Pulse
+X - Age
+
+Hypothesis Y = 220 - X
+
+```{r}
+x = c(18, 23, 25, 35, 65, 54, 34, 56, 72, 19, 23, 42, 18, 39, 37)
+y = c(202, 186, 187, 180, 156, 169, 174, 172, 153, 199, 193, 174, 198, 183, 178)
+
+model = lm(y ~ x)
+plot(model, 1)
+
+sm = summary(model)
+```
+Model looks like linear, both p-values are small, so none of the coefficients are zero.
+
+We check the hypothesis Y = 220 - X
+H0 : B1 = -1
+H1 : B1 != 1
+
+```{r}
+standard.error = sm$coefficients['x', 'Std. Error']
+
+# Calculate the statistic 
+# model$coefficients are the coeffs of the regression
+# sm$coefficients are the summary coefficients
+t = (model$coefficients[2] + 1) / standard.error
+t
+
+# Calculate p-value
+p.value = pt(t, 13, lower.tail = F) * 2
+p.value
+```
+
+Now predicting pulse for 30, 40, 50 years
+```{r}
+d = data.frame(x = c(30, 40, 50))
+
+predict(model, d)
+```
+
+90% Confidence interval for the pulse
+```{r}
+pr = predict(model, d, interval = 'confidence', level = 0.9)
+plot(x, y)
+
+lines(d$x, pr[,2], col = 'red')
+```
+
+Prediction for the pulse
+```{r}
+df = data.frame(x = seq.int(min(x), max(x), 5))
+pr = predict(model, df, interval = 'confidence', level = 0.9)
+pr
+
+plot(x, y)
+lines(df$x, pr[,3], col='red')
+```
+
+#### Problem 2
+
+```{r}
+data(mtcars)
+```
