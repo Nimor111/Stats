@@ -1,0 +1,136 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+Multiple regression 
+
+### Problem 1
+```{r}
+library(faraway)
+attach(savings)
+
+# dependence of y on all other variables
+l = lm(sr ~ ., data=savings)
+
+```
+Let's see the coefficients
+```{r}
+summary(l)
+```
+The p values here are for hypothesis that the ith coefficient is equal to zero.
+If it's zero, it doesn't have an effect on the model. The stars next to the p values show how "important" the variable is for the model.
+
+Testing whether pop15 is important for the model. To test whether it's important, we make a model without it and compare the two. 
+
+```{r}
+l2 = lm(sr ~ pop75 + dpi + ddpi)
+
+summary(l2)
+```
+So how do we compare two models? We are checking a hypothesis l = l2 and alternative l != l2. We use ANOVA. ( analysis of variance )
+```{r}
+anova(l, l2)
+```
+Our p value is small. We decline the hypothesis so the models are different. Pop15 is important for the model. 
+
+Can we treat the variables pop15 and pop75 the same? A.k.a for the coefficients before them, are they equal? So we do y ~ X1 + I(x2 + x3) + x4 + ... This treats x2 and x3 as the same variable and makes the model based on that. Let's compare the two.
+
+```{r}
+l3 = lm(sr ~ I(pop15 + pop75) + dpi + ddpi)
+anova(l3, l)
+```
+Big p value, so we can't decline the hypothesis. Which means that pop15 and pop75 have the same effect on the model. ( When these are the variables, if we add or remove variables things may change drastically )
+
+Can we say that ddpi is 1? 
+Is the coefficient in front of it 1?
+We can do a t statistic with a p value, or make a model with a fixed coefficient for the variable. And ANOVA comes again for the two models.
+
+```{r}
+l4 = lm(sr ~ pop15 + pop75 + dpi + offset(ddpi))
+anova(l, l4)
+
+summary(l4)
+```
+Small p value, we decline the hypothesis. So ddpi can't be treated as 1.
+
+### Problem 2
+
+```{r}
+data = read.csv("Data.txt")
+
+plot(subset(data, select=-X))
+
+attach(data)
+
+l = lm(y ~ x1 + x2 + x3 + x4)
+summary(l)
+```
+x3 has a relatively big p value, we can try removing it.
+
+```{r}
+l2 = lm(y ~ x1 + x2 + x4)
+summary(l2)
+
+anova(l, l2)
+```
+Judging by the p value in anova we can't deny that the models are the same. So we can remove x3. Woot.
+
+### Problem 3 
+
+How does the distance depend on the height?
+
+```{r}
+height = c(100, 200, 300, 450, 600, 800, 1000)
+distance = c(253, 337, 395, 451, 495, 534, 574)
+
+plot(height, distance)
+
+l = lm(distance ~ height)
+summary(l)
+
+plot(l, 1)
+```
+In the plot we can see that the linear model is not good, data looks to be on a curve. So we try a non-linear one ( sort of )
+
+```{r}
+l2 = lm(distance ~ height + I(height ^ 2))
+
+summary(l2)
+```
+A better model. Now to see the curve...
+```{r}
+x = seq.int(100, 1000, 50)
+dx = data.frame(height = x)
+
+p = predict(l2, dx)
+
+plot(height, distance)
+lines(x, p, col='red')
+```
+Yeah, the curve is better than the line. This is a generalization of the linear model. 
+
+### Problem 4
+
+```{r message=FALSE, warning=FALSE}
+library(UsingR)
+attach(homeprice)
+
+l = lm(sale ~ ., data=homeprice)
+summary(l)
+```
+
+How does the total number of rooms impact the price ( column sale )? 
+Let's make a linear model without this variable and compare the two.
+
+```{r}
+l2 = lm(sale ~ list + full + half + bedrooms + neighborhood)
+summary(l2)
+
+anova(l, l2)
+```
+P-value of 0.9 - pretty obvious model is not linear. So the rooms variable doesn't impact the price at all, pretty much. 
+
+Does a full bathroom increase price by 15000? Well, the coefficient in the linear model is -5. Doesn't seem like it.
