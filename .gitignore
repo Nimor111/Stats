@@ -10,3 +10,6 @@
 *.fls
 *.aux
 *.out
+
+# Temporary measures
+**/Homework2/**

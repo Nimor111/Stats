@@ -2,9 +2,9 @@
 title: "R Homework 1"
 author: "Георги Божинов 81333 курс 3 група 1"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
   pdf_document:
     latex_engine: xelatex
 ---
@@ -30,8 +30,9 @@ head(cp[order(-cp$sport_cars.Horsepower),], 3)
 ```
 
 Мили за галон -> Литри за 100 километра
+
 Градско:
-````{r}
+```{r}
 282.48/MPG.city
 ```
 
@@ -47,7 +48,9 @@ plot(Cylinders, MPG.city, xlab='Cylinders', ylab='MPG.city')
 plot(Cylinders, MPG.highway, xlab='Cylinders', ylab='MPG.highway')
 ```
 
-Виждаме, че колкото повече цилиндри има кола, толкова по-малко мили за галон може да измине. И съответно толкова повече литри изхабява за 100 километра.
+Виждаме, че колкото повече цилиндри има кола,
+толкова по-малко мили за галон може да измине.
+И съответно толкова повече литри изхабява за 100 километра.
 
 Връзка между обем на двигателя и мощността на колата.
 Намираме и outliers с функция identify.
