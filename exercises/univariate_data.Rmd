@@ -1,0 +1,151 @@
+---
+title: "Univariate data"
+output: html_notebook
+---
+
+# Exercises from chapter 3 of the Verzani R book
+
+First, dabblings while I read the chapter:
+Categorical data.
+Smoking survey, for example.
+
+```{r}
+x = c("Yes", "No", "No", "Yes", "Yes")
+table(x)
+```
+So it adds up the frequency of each element. Nice. Now factors. They are a way to classify categorical data into levels.
+```{r}
+factor(x)
+```
+Bar charts. Shows frequencies and proportions. Types of beers that people drink.
+```{r}
+beer = c(3, 4, 1, 1, 3, 4, 3, 3, 1, 3, 2, 1, 2, 1, 2, 3, 2, 3, 1, 1, 1, 1, 4, 3, 1)
+barplot(beer)
+barplot(table(beer))
+barplot(table(beer)/length(beer))
+```
+What else?
+```{r}
+pie(table(beer), col=c("purple", "green2", "cyan", "white"))
+```
+Numerical data - summary. Mean, var, sd, median, fivenum, summary. Quantiles, quartiles.
+p quantile is 1 + (n-1)p. The .25, .5, .75 quantiles are called quartiles.
+```{r}
+fivenum(beer)
+```
+
+```{r}
+data = c(10, 17, 18, 25, 28, 28)
+
+summary(data)
+quantile(data, c(.25, .5, .75))
+```
+Remove some outliers from data.
+
+```{r}
+data[7] = 284728481748
+
+mean(data, trim=1/10)
+mean(data, trim=2/10)
+median(data)
+mean(data, trim=1/2)
+```
+Measure of spread. ( as in var and sd for normal distr ) mad() and IQR()
+Find values in intervals - cut(breaks=c(intervals))
+
+```{r}
+hist(data, probability = T)
+rug(jitter(data)) # shows points
+# lines(density(data))
+simple.freqpoly(data)
+```
+Boxplots!
+
+```{r}
+boxplot(data, horizontal = T)
+```
+
+```{r, warning=FALSE, message=FALSE}
+data("faithful")
+attach(faithful)
+
+hist(eruptions, 15, prob=T)
+lines(density(eruptions))
+```
+
+# Problems
+
+## Problem 3
+The first two are strange.
+
+Generating samples with rnorm.
+
+```{r}
+x = rnorm(100)
+y = rnorm(100)
+
+hist(x, probability = T)
+lines(density(x))
+
+hist(y, probability = T)
+lines(density(y))
+```
+
+## Problem 4
+
+```{r}
+library(UsingR)
+
+hist(south, probability = T)
+boxplot(south, horizontal = T)
+```
+This one is skewed to the left, has some outliers.
+
+```{r}
+hist(crime$y1983, probability = T)
+boxplot(crime$y1983, horizontal = T)
+```
+Quite the same here.
+
+```{r}
+hist(aid, probability = T)
+boxplot(aid, horizontal = T)
+```
+This one is more symmetric and not skewed.
+
+## Problem 5
+Just looking at data sets. 
+```{r}
+hist(math, probability = T)
+hist(firstchi, probability = T)
+hist(bumpers, probability = T)
+```
+
+## Problem 6
+O-ring failures for first 23 flights of us space shuttle Challenger
+
+```{r}
+shuttle.failures = c(0, 1, 0, NA, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1)
+
+table(shuttle.failures)
+
+mean(shuttle.failures, na.rm=T)
+```
+
+## Problem 7 
+Yay, pie.
+
+```{r}
+hist(pi2000, breaks=c(0:9), probability = T)
+
+# proportion of 1s
+sum(pi2000 == 1) / 2000
+
+# of 2s
+sum(pi2000 == 2) / 2000
+
+# of all
+table(pi2000) / 2000
+
+lines(density(pi2000))
+```

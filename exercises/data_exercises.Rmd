@@ -1,0 +1,87 @@
+---
+title: "Data exercises"
+output: html_notebook
+---
+
+# Exercises from Verzani R book, chapter 2
+
+## Problem 1
+
+Keeping track of mileage each time you fill up. Data is:
+
+```{r}
+mileage = c(65311, 65624, 65908, 66219, 66499, 66821, 67145, 67447)
+x = diff(mileage)
+x
+```
+Diff counts the number of miles between fill-ups. Let's find the min, max, mean.
+```{r}
+max(x)
+min(x)
+mean(x)
+```
+
+## Problem 2
+
+Tracking commute times for two weeks ( 10 days )
+
+```{r}
+travel.time = c(17, 16, 20, 24, 22, 15, 21, 15, 17, 22)
+max(travel.time)
+mean(travel.time)
+min(travel.time)
+```
+Apparently 24 is a mistake. Let's fix it.
+```{r}
+travel.time[which(travel.time == 24)] = 18
+mean(travel.time)
+```
+How many times was commute 20 or more?
+```{r}
+sum(travel.time >= 20)
+```
+And percent of it less than 17?
+```{r}
+(sum(travel.time < 17) * 10) / 100
+```
+
+## Problem 3
+
+Cell phone bills. How much was spent? And a bunch of other statistics.
+
+```{r}
+phone.bills <- c(46, 33, 39, 37, 46, 30, 48, 32, 49, 35, 30, 48)
+sum(phone.bills)
+min(phone.bills)
+max(phone.bills)
+sum(phone.bills > 40)
+(sum(phone.bills > 40) * 12) / 100
+```
+
+## Problem 4
+
+Buying a used car. Over 3 months of watching following prices:
+
+```{r}
+car.prices = c(9000, 9500, 9400, 9400, 10000, 9500, 10300, 10200)
+mean(car.prices)
+min(car.prices)
+max(car.prices)
+```
+
+## Problem 5
+
+Some functions in R.
+
+```{r}
+x = c(1, 8, 2, 6, 3, 8, 5, 5, 5, 5)
+
+sum(x) / 10
+
+log(x, base=10)
+
+(x - 4.4) / 2.875
+
+diff(range(x))
+```
+Last one is difference between min and max value. 
