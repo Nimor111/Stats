@@ -1,0 +1,135 @@
+---
+title: "Mock exam"
+output: html_notebook
+---
+
+## Problem 1
+
+```{r}
+library(MASS)
+attach(Aids2)
+```
+How many people are less than 20 years old?
+```{r}
+sum(age < 20)
+```
+Gender of first five people
+```{r}
+sex[1:5]
+```
+What part of the men were infected through blood?
+```{r}
+men.count = sum(sex=='M')
+men.blood = sum(T.categ=='blood')
+
+men.blood / men.count
+```
+Graphic for death by state
+```{r}
+deaths.by.state = data.frame(state=state[status=='D'])
+barplot(table(deaths.by.state), beside = T, legend=c(levels(state)), main='deaths by state')
+```
+
+## Problem 2
+Is it true that women death rate is lower? Let's check a hypothesis.
+
+```{r}
+women.deaths = c(length(status[status=='D' & sex == 'F']), sum(sex == 'F'))
+men.deaths = c(length(status[status=='D' & sex == 'M']), sum(sex == 'M'))
+
+prop.test(women.deaths, men.deaths, alternative = 'less')
+```
+Big p-value. We can't decline the hypothesis. Women death rate is not lower.
+
+## Problem 3
+Is the mean 38?
+
+```{r}
+dead.age = age[status=='D']
+
+qqnorm(dead.age)
+qqline(dead.age)
+
+shapiro.test(dead.age)
+```
+Definitely not normal. So wilcox?
+
+```{r}
+wilcox.test(dead.age, mu = 38)
+```
+Well, it's not 38, apparently. ( There are a lot of outliers )
+
+## Problem 4
+ 
+```{r}
+x.sample = rchisq(100, df=10)
+hist(x.sample, probability = T)
+
+lines(sort(x.sample), dchisq(sort(x.sample), df=10))
+```
+
+## Problem 5
+Relation between body weight and heart weight for cats.
+
+```{r, message=FALSE, warning=FALSE}
+attach(cats)
+
+male.cats = cats[cats$Sex == 'M',]
+Bwt = male.cats$Bwt
+Hwt = male.cats$Hwt
+
+lm.heart = lm(Hwt ~ Bwt)
+```
+So the relation is Hwt = 4.31 * Bwt - 1.18
+
+```{r}
+new.weights = male.cats$Bwt + 1
+new.heart.weights = predict(lm.heart, data.frame(Bwt=new.weights))
+
+lm2.heart = lm(new.heart.weights ~ Bwt)
+
+lm2.heart$coefficients
+```
+Heart is heavier by about 4 gr when weight is more. So it's not 5.
+
+Confidence interval for Hwt for Bwt = 2.6 kg.
+```{r}
+predict(lm.heart, data.frame(Bwt=2.6), level = .95, interval = "confidence")[2:3]
+```
+
+## Problem 6
+
+Three groups of 20 women, three different diets. Comparing the data of how much weight they lost.
+
+```{r}
+diet.data = read.csv("./Data1.txt", sep=";", dec=",")
+
+hist(diet.data, probability = T)
+
+shapiro.test(diet.data$x1)
+shapiro.test(diet.data$x2)
+shapiro.test(diet.data$x3)
+```
+We are going to compare them two by two. For all three columns, we don't reject null hypothesis that they are normally distributed.
+
+```{r}
+t.test(diet.data$x1, diet.data$x2)
+t.test(diet.data$x2, diet.data$x3)
+t.test(diet.data$x1, diet.data$x3)
+```
+
+This can be done with anova.
+
+```{r}
+diet.vector = c(diet.data$x1, diet.data$x2, diet.data$x3)
+n = rep(20, 3)
+
+group = rep(1:3, n)
+
+diet.data2 = data.frame(data=diet.vector, group=factor(group))
+
+fit = lm(diet.vector ~ group, diet.data2)
+
+anova(fit)
+```
+Not really sure how correct this is, but worth a shot.

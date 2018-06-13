@@ -3,13 +3,14 @@
 .Rhistory
 
 # Generated files from R notebooks
-*.docx
-*.html
-*.nb.html
-*.pdf
-*.fls
-*.aux
-*.out
-
-# Temporary measures
-**/Homework2/**
+**/*.docx
+**/*.html
+**/*.nb.html
+**/*.pdf
+**/*.fls
+**/*.aux
+**/*.out
+**/*.odt
+**/*.tex
+**/*.log
+**/*.fdb**
