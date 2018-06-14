@@ -1,0 +1,187 @@
+---
+title: "Bivariate data"
+output: html_notebook
+---
+
+# Notes from chapter 4 of the Verzani R book
+
+```{r}
+smokes = c("Y", "N", "N", "Y", "N", "Y", "Y", "Y", "N", "Y")
+amount = c(1, 2, 2, 3, 3, 1, 2, 1, 3, 2)
+
+table(smokes, amount)
+
+# rows sum to 1
+prop.table(table(smokes, amount), 1)
+
+# cols sum to 1
+prop.table(table(smokes, amount), 2)
+
+# everything sums to 1
+prop.table(table(smokes, amount))
+
+barplot(table(smokes, amount), beside=T, legend=(c('N', 'Y')))
+barplot(table(amount, smokes), legend=c("less than 5", "5-10", "more than 10"), beside=T)
+
+prop = function(x) x / sum(x)
+
+apply(prop.table(table(smokes, amount)), 2, prop)
+```
+
+```{r}
+experimental = c(5, 5, 5, 13, 7, 11, 11, 9, 8, 9)
+control = c(11, 8, 4, 5, 9, 5, 10, 5, 4, 10)
+
+boxplot(experimental, control)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(UsingR)
+attach(home)
+
+boxplot(scale(home))
+```
+rlm function - regression, resistant to outliers. Computes least square difference not for all data. lm - standard regression
+```{r}
+attach(florida)
+
+plot(BUSH, BUCHANAN)
+abline(lm(BUCHANAN~BUSH), lty=1)
+abline(rlm(BUCHANAN~BUSH), lty=2)
+abline(rlm(BUCHANAN[-50]~BUSH[-50]), lty=3)
+```
+Removing one point from the resistant regression makes no difference to the regression line.
+
+How to plot
+```{r}
+curve(x^2, 0, 4)
+x = seq(0, 4, by=.1)
+plot(x, x^2, type="l")
+
+miles = (0:8)*4
+tread = c(394, 329, 291, 255, 229, 204, 179, 163, 150)
+
+plot(miles, tread)
+# abline(lm(tread ~ miles))
+# abline(360, -7.3)
+# points(miles, 360 - 7.3*miles, type="l")
+# lines(miles, 360 - 7.3*miles)
+curve(360 - 7.3*x, add=T)
+```
+
+# Problems
+
+## Problem 1
+
+```{r}
+student.answers = read.csv("./student_data.txt", sep=" ")
+```
+Table for results of question 1 and question 2 separately
+```{r}
+first.and.second = data.frame(student=student.answers$student, ques1=student.answers$ques.1, ques2=student.answers$ques.2)
+```
+We don't need student col, it's the same as the col of row numbers.
+
+```{r}
+first.and.second = subset(first.and.second, select=c("ques1", "ques2"))
+
+q1 = first.and.second$ques1
+q2 = first.and.second$ques2
+table(q1, q2)
+```
+The last one is a contingency table, as in how many time is each tuple in the dataset.
+
+Stacked barplot of 2 and 3
+```{r}
+barplot(table(ques2, ques3))
+```
+
+Side by side barplot of all three questions.
+
+```{r}
+barplot(as.matrix(subset(student.answers, select=c("ques.1", "ques.2", "ques.3"))), beside = T)
+```
+
+## Problem 2
+
+```{r, message=FALSE, warning=FALSE}
+library('MASS')
+attach(UScereal)
+names(UScereal)
+```
+Relationship between manufacturer and shelf
+
+```{r}
+# barplot
+barplot(table(shelf, mfr), beside=T, legend=c(1,2,3))
+```
+Most of them seem to be on the third shelf.
+
+Relationship between fat and vitamins
+
+```{r}
+barplot(table(vitamins, fat), beside=T, legend=levels(vitamins))
+```
+Most enriched vitamin products seem to have 0 fat in them.
+
+Fat and shelf
+
+```{r}
+barplot(table(shelf, fat), beside=T, legend=c(1, 2, 3))
+```
+Seems like most of the products with 0 fat are on the first and third shelves. While if they have more fat they are on the second shelf. And the ones with the most fat are on the third shelf.
+
+Carbs and sugars
+```{r}
+plot(carbo, sugars)
+cor(carbo, sugars)
+```
+
+No linear relationship. Can't really say. Maybe a parabolic thing.
+
+Fibre and manufacturer
+
+```{r}
+plot(mfr, fibre)
+```
+P have the most fibre, followed by N. Q seems to have the least.
+
+Sodium and sugars
+```{r}
+plot(scale(sugars), scale(sodium))
+```
+Sodium stays relatively the same even if we add more sugars.
+
+## Problem 3
+
+```{r, message=FALSE, warning=FALSE}
+attach(mammals)
+
+cor(body, brain)
+cor(body, brain, method = 'spearman')
+
+plot(body, brain)
+abline(lm(brain ~ body))
+
+plot(log(body), log(brain))
+abline(lm(log(brain)~log(body)))
+```
+Wow, that log looks so much better. Linear, definitely.
+
+## Problem 4
+
+```{r, message=FALSE, warning=FALSE}
+attach(homedata)
+
+l = lm(y2000 ~ y1970)
+
+# summary(l)
+
+l2 = lm(y2000[-c(1064, 2048, 2973)] ~ y1970[-c(1064, 2048, 2973)])
+
+summary(l2)
+
+predict(l2, data.frame(y1970=c(75000)))
+```
+
+And so on...

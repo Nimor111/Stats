@@ -1,0 +1,161 @@
+---
+title: "Random data"
+output: html_notebook
+---
+
+
+```{r}
+x = runif(100)
+hist(x, probability = T, col=gray(.9), main="uniform on [0,1]")
+curve(dunif(x, 0, 1), add=T)
+```
+
+```{r}
+x = rnorm(100)
+hist(x, probability = T, col=gray(.9), main="normal with 0, 1")
+curve(dnorm(x, 0, 1), add=T)
+```
+
+```{r}
+# x successes in 10 trials
+x = rbinom(1, 10, .5)
+
+# 5 times x successes
+y = rbinom(5, 10, .5)
+
+n = 100; p = .25
+x = rbinom(100, n, p)
+
+hist(x, probability = T)
+xvals = 0:n
+points(xvals, dbinom(xvals, n, p), type='h', lwd=3)
+```
+Larger n -> looks like normal distr.
+
+```{r}
+x = rexp(100, 1/2500)
+hist(x, probability = T)
+lines(density(x))
+curve(dexp(x, 1/2500), add=T)
+```
+
+Taking a sample from an existing dataset
+
+```{r}
+attach(faithful)
+
+s = sample(eruptions, 100, replace=TRUE)
+
+hist(s, breaks=25)
+hist(eruptions, breaks=25)
+```
+
+P functions - cumulative distribution function
+q function - quantile function
+
+```{r}
+# prob of std normal distr being less than .7
+# P(Z <= .7)
+
+pnorm(.7)
+
+# which value corresponds to .75, as in P(Z <= z) = .75
+qnorm(.75)
+```
+
+Standartisation of normal distr and finding z scores
+
+```{r}
+x = rnorm(5, 100, 16)
+
+z = (x-100) / 16
+pnorm(z)
+
+pnorm(x, 100, 16)
+``` 
+
+# Problems
+
+## Problem 1
+
+```{r}
+x = runif(10, 0, 10)
+range(x)
+```
+
+## Problem 2
+
+```{r}
+x = rnorm(10, 5, 5)
+
+sum(x < 0)
+```
+
+## Problem 3
+
+```{r}
+x = rnorm(100, 100, 10)
+
+two.sd.left = 100 - 2*10
+two.sd.right = 100 + 2*10
+
+sum(x < two.sd.left | x > two.sd.right)
+```
+
+## Problem 4
+
+```{r}
+x = sample(0:1, 50, replace=T)
+
+sum(x == 1)
+```
+
+## Problem 5
+```{r}
+s = sample(1:6, 100, replace=T)
+
+sum(s == 6)
+```
+
+## Problem 6
+```{r}
+lottery = sample(6:49, 6)
+
+range(lottery)
+```
+
+## Problem 7
+```{r}
+# P(Z <= z*) = .05
+qnorm(.05)
+```
+
+## Problem 8
+```{r}
+# P(-z* <= Z <= z*) = .05
+qnorm(.05)
+-qnorm(.05)
+```
+
+## Problem 9
+```{r}
+1 - pnorm(1.5, 0, 2)
+```
+
+## Problem 10
+```{r}
+x = rexp(100, 1/10)
+
+hist(x, probability = T)
+
+median(x)
+```
+Median is less than the mean.
+
+## Problem 11
+```{r}
+cards = paste(rep(c("A", 2:10, "J", "Q", "K"), 4), c("H", "D", "S", "C"))
+
+# when will we get a pair?
+sample(cards, 5)
+```

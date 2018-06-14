@@ -1,0 +1,80 @@
+---
+title: "Multivariate data"
+output: html_notebook
+---
+
+```{r, message=FALSE, warning=FALSE}
+attach(PlantGrowth)
+
+# unstack makes a new data frame by the levels of the factor
+boxplot(unstack(PlantGrowth))
+
+# same thing, a.k.a weight by the variable group
+boxplot(weight ~ group)
+```
+
+# Problems
+
+## Problem 1
+```{r, message=FALSE, warning=FALSE}
+attach(emissions)
+
+plot(GDP, CO2)
+# identify(GDP, CO2, n = 1)
+# identified 1 as outlier
+
+plot(GDP[-1], CO2[-1])
+```
+
+## Problem 2
+
+Make a side-by-side boxplot of the chips dataset.
+```{r message=FALSE, warning=FALSE}
+attach(chips)
+
+boxplot(chips)
+```
+The means look pretty similar. 
+
+## Problem 3
+
+Same thing for chickens.
+
+```{r message=FALSE, warning=FALSE}
+attach(chicken)
+
+boxplot(chicken)
+```
+So, we can see that with the third ration the chickens are the fattest. In fact, we see a steady rise of the means with 1 kg with each ration.
+
+## Problem 4
+```{r message=FALSE, warning=FALSE}
+attach(kid.weights)
+
+# age.yr = cut(age, seq(0, 144, by=12), labels=0:11)
+
+# age = age.yr
+
+boxplot(weight ~ age)
+```
+So, there is a steady rise up until the 10th year. Then children tend to lose weight.
+
+## Problem 5
+```{r message=FALSE, warning=FALSE}
+attach(carbon)
+
+# side by side boxplot of monoxide reading by site
+boxplot(unstack(carbon))
+```
+Levels at second site are quite larger.
+
+## Problem 6
+```{r, message=FALSE, warning=FALSE}
+attach(babies)
+
+# pairs(babies)
+
+# weight and gestation depending on the level of smoking
+plot(wt, gestation, pch=smoke)
+```
+So many variables...
