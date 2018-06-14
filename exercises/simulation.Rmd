@@ -1,0 +1,80 @@
+---
+title: "Simulations"
+output: html_notebook
+---
+
+CLT
+
+If we have Xi random variables, i = 1..n, then (sum(Xi))/n - mu / (sigma / sqrt(n)) is normal with (0, 1) - that is, if mu and sigma are known.
+
+```{r}
+n = 10; p = .25; S = rbinom(100, n, p)
+
+# should be normal with mean 0 and sd 1
+X = (S - n*p) / sqrt(n*p*(1-p))
+
+hist(X, prob = T)
+lines(density(X))
+```
+
+Better checking if data is normal:
+
+```{r}
+x = rnorm(100); qqnorm(x, main='normal(0,1)');qqline(x)
+x = rnorm(100, 10, 15); qqnorm(x, main='normal(10,15)');qqline(x)
+x = runif(100); qqnorm(x, main='unif(0,1)');qqline(x)
+x = rexp(100, 1/10); qqnorm(x, main='exp(1/10)');qqline(x)
+```
+
+# Problems
+
+## Problem 1
+
+```{r}
+x1 = rbinom(100, 100, .5)
+x2 = rbinom(100, 100, .5)
+
+boxplot(x1, x2)
+```
+They look relatively similar.
+
+## Problem 2
+```{r}
+xn1 = rnorm(10, 10, 10)
+xn2 = rnorm(10, 100, 100)
+
+boxplot(x1, x2)
+```
+Second is a bit more skewed to the left.
+
+## Problem 3
+```{r}
+x1 = rbinom(100, 100, .25)
+x2 = rbinom(100, 100, .05)
+x3 = rbinom(100, 100, .01)
+
+hist(x1, probability = T)
+lines(density(x1))
+
+hist(x2, probability = T)
+lines(density(x2))
+
+hist(x3, probability = T)
+lines(density(x3))
+```
+When np >= 5 and n(1-p) >= 5 the data is approx normal.
+
+## Problem 4
+```{r}
+normies = rnorm(100)
+
+# number of sds
+k = 1
+sigma = 1
+
+sds = function(k, n=100) sum(-k*sigma < normies & normies < sigma*k) / n
+
+sds(1) 
+sds(2)
+sds(3)
+```

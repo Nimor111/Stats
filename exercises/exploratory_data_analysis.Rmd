@@ -1,0 +1,65 @@
+---
+title: "Exploratory data analysis"
+output: html_notebook
+---
+
+EDA is the process of looking at a data set to see what statistical inferences can be learned from that data. For univariate - is it normal, longer tailed, shorter tailed? Symmetry, skewed? Unimodal, bimodal? 
+
+Our toolbox is:
+
+Barplots - for categorical data
+Hist - for shape of numerical distros 
+Boxplots - for seeing summaries of numerical distr, comparing distributions
+Normal probability plots - is data approximately normal?
+
+```{r message=FALSE, warning=FALSE}
+attach(homedata)
+
+# hist(y1970); hist(y2000)
+
+simple.eda(y1970); simple.eda(y2000)
+```
+Soo, heavily skewed, not normal. Lots of outliers. Heavily tailed.
+
+Now, for exec.pay. 
+
+```{r}
+simple.eda(exec.pay)
+```
+Very heavily skewed. So let's do a log transform.
+
+```{r}
+log.exec.pay = log(exec.pay[exec.pay > 0])
+
+simple.eda(log.exec.pay)
+```
+
+# Problems
+
+## Problem 1
+
+```{r message=FALSE, warning=FALSE}
+attach(babies)
+
+hist(wt, probability = T)
+lines(density(wt))
+
+qqnorm(wt)
+qqline(wt)
+```
+Normal, sort of.
+
+```{r}
+simple.eda(gestation)
+```
+Skewed, kinda exponential.
+
+```{r}
+simple.eda(age)
+```
+Again, skewed, heavy tail.
+
+```{r}
+simple.eda(ht); simple.eda(wt1)
+```
+Height looks normally distributed, weight is skewed as hell.

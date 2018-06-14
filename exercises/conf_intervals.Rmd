@@ -1,0 +1,91 @@
+---
+title: "Confidence intervals"
+output: html_notebook
+---
+
+For a (1-a)100% confidence level, where for any a in (0, 1) we find a z* such that:
+P (-z* < z < z*) = 1 - a ( z* is z(1-a/2))
+
+```{r}
+alpha = c(0.2, 0.1, 0.05, 0.001)
+zstar = qnorm(1 - alpha/2)
+zstar
+```
+And the reverse:
+```{r}
+2*(1-pnorm(zstar))
+```
+
+Finding 95% percent confidence interval that 42 people liked some brand from 100 surveyed people.
+
+```{r}
+prop.test(42, 100)
+```
+By default it makes a 95% conf interval.
+
+```{r}
+prop.test(42, 100, conf.level = .9)
+```
+t.test for normal data, wilcox.test for data that is normal ( it's a test for the median, confidence interval for the median )
+
+# Problems
+
+## Problem 1
+
+```{r}
+x = rnorm(15, 10, 5)
+
+simple.z.test = function(x, sigma, conf.level=.95) {
+  n = length(x)
+  xbar = mean(x)
+  alpha = 1 - conf.level
+  zstar = qnorm(1-alpha/2)
+  SE = sigma/sqrt(n)
+  xbar + c(-zstar*SE, zstar*SE)
+}
+
+simple.z.test(x, 5)
+``` 
+Compare with t.test
+
+```{r}
+t.test(x)
+```
+T.test interval is always bigger than the z.test. As t distribution has a bigger mean than the normal when put side to side in a boxplot.
+
+```{r}
+x = rnorm(100); y = rt(100, 9)
+boxplot(x, y)
+```
+
+## Problem 3
+
+```{r}
+wilcox.test(exec.pay, conf.int = T, conf.level = .8)
+wilcox.test(exec.pay, conf.int = T, conf.level = .95)
+```
+
+## Problem 4
+
+```{r}
+qqnorm(rat)
+qqline(rat)
+
+t.test(rat, mu=110)
+```
+Normal data, using t.test. With the given conf interval, a 110 mean is appropriate. T.test says so, too.
+
+```{r}
+qqnorm(puerto)
+qqline(puerto)
+
+t.test(puerto, mu=270)
+```
+Same logic here.
+
+## Problem 5
+```{r}
+qqnorm(malpract); qqline(malpract)
+
+wilcox.test(malpract, conf.int = T, conf.level = .9)
+```
