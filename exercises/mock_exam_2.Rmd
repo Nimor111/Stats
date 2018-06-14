@@ -1,0 +1,66 @@
+---
+title: "Mock exam 2"
+output: html_notebook
+---
+
+# Problems
+
+## Problem 1
+
+Calculate quantile with probability .05 for N(0, 1), two-sided.
+
+```{r}
+qnorm(.05)
+-qnorm(.05)
+```
+
+## Problem 2
+
+```{r}
+illiteracy = state.x77[,3]
+names(sort(illiteracy)[1:5])
+
+life.exp = state.x77[,4]
+sum(life.exp > 70)
+
+population.density = state.x77[,1] / state.x77[,8]
+sort(population.density, decreasing = T)[1]
+
+d = data.frame(population=state.x77[,1], area=state.x77[,8])
+d = d[order(-d$area),]
+sum(d[1:5,]$population)
+```
+
+## Problem 3
+
+Given data for effectiveness of a new medicament on women and men.
+```{r}
+women = c(124, 200)
+men = c(50, 100)
+
+prop.test(x=c(124, 50), n=c(200, 100), conf.level = .99, alternative = 'greater')
+```
+We accept the alternative. The medicament is more effective for women.
+
+## Problem 4
+
+```{r message=FALSE, warning=FALSE}
+d = data.frame(x3=anscombe$x3, x4=anscombe$x4)
+
+attach(d)
+
+cor(x3, x4)
+
+l = lm(x3 ~ x4)
+
+summary(l)
+
+# outliers - 3, 6, 11
+x3.new = x3[-c(3,6,11)]
+x4.new = x4[-c(3, 6, 11)]
+
+l2 = lm(x3.new ~ x4.new)
+
+summary(l2)
+```
+Linear model is a little better, but let's face it. These columns are not related like that.
