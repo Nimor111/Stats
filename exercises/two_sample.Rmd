@@ -1,0 +1,88 @@
+---
+title: "Two Sample tests"
+output: html_notebook
+---
+
+Verzani, Simple R, chapter 11.
+Two surveys. 
+
+Week 1 -> Favorable 45, Unfavorable 35
+Week 2 -> 56, 47
+
+Are they equal?
+
+```{r}
+prop.test(c(45, 56), c(45+35, 56+47))
+
+# or
+
+chisq.test(matrix(c(45, 56, 35, 47), ncol=2, nrow=2))
+```
+Well, not much of a difference then, in the two weeks.
+
+Two sample t tests
+
+t statistic now is (x1 - x2) - (mu1 - mu2) / sqrt(s1^2 / n1 + s2^2 / n2), where x1 and x2 are averages.
+
+When we assume equal variances...
+```{r}
+with.drug = c(15, 10, 13, 7, 9, 8, 21, 9, 14, 8)
+placebo = c(15, 14, 12, 8, 14, 7, 16, 10, 15, 12)
+```
+So we try with equal variances...
+```{r}
+t.test(with.drug, placebo, alt="less", var.equal = TRUE)
+```
+It's not very different with assumption of unequal variances...
+```{r}
+t.test(with.drug, placebo, alt="less")
+```
+
+For paired samples: We assume the variables are dependent on one another. We assume that Y is X + e ( some vector of errors ). We test the mean of the errors: whether it is 0, as in, the data is similar. 
+
+```{r}
+grader.one = c(3, 0, 5, 2, 5, 5, 5, 4, 4, 5)
+grader.two = c(2, 1, 4, 1, 4, 3, 3, 2, 3, 5)
+
+t.test(grader.one, grader.two, paired=T)
+```
+Reject the null hypothesis.
+
+# Problems
+
+## Problem 1
+
+```{r}
+attach(homework)
+
+boxplot(Private, Public)
+
+t.test(Private, Public, paired=T)
+
+detach(homework)
+```
+We can't reject hypothesis.
+
+## Problem 2
+
+```{r message=FALSE, warning=FALSE}
+attach(corn)
+
+# without matched sample
+
+t.test(Standard, New)
+
+# with matched sample
+
+t.test(Standard, New, paired=T)
+```
+Reject the null hypothesis.
+
+## Problem 3
+
+```{r}
+attach(blood)
+
+t.test(Machine, Expert)
+```
+They seem to be equal.

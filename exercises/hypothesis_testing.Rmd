@@ -1,0 +1,48 @@
+---
+title: "Hypothesis testing"
+output: html_notebook
+---
+
+Hypothesis testing problems
+
+## Problem 1
+
+Vacation data
+```{r}
+qqnorm(vacation)
+qqline(vacation)
+```
+Soo...a test for the mean is appropriate. So t-test.
+
+```{r}
+t.test(vacation, mu=24, alternative = 'less')
+```
+
+## Problem 2
+
+Same thing for pH levels for water samples in the Great Smoky Mountains
+
+```{r}
+data = smokyph$waterph
+qqnorm(data); qqline(data)
+```
+Looks skewed to the left. So we do a test for the median.
+
+```{r}
+wilcox.test(data, mu=7, alternative = 'greater')
+```
+Small p-value. We reject the hypothesis.
+
+## Problem 3
+
+```{r}
+prop.test(440, 900, p=.5)
+```
+Yeah. Bush can be said to have received 50% of the votes.
+
+```{r}
+stomach = cancer$stomach
+
+wilcox.test(stomach, mu=100)
+```
+Big p-value, so it may be 100 days of survival with stomach cancer and vitamin C. :(
