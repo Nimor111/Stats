@@ -37,7 +37,7 @@ Is it true that women death rate is lower? Let's check a hypothesis.
 women.deaths = c(length(status[status=='D' & sex == 'F']), sum(sex == 'F'))
 men.deaths = c(length(status[status=='D' & sex == 'M']), sum(sex == 'M'))
 
-prop.test(women.deaths, men.deaths, alternative = 'less')
+prop.test(c(women.deaths[1], men.deaths[1]), c(women.deaths[2], men.deaths[2]), alternative = 'less')
 ```
 Big p-value. We can't decline the hypothesis. Women death rate is not lower.
 
@@ -109,6 +109,10 @@ hist(diet.data, probability = T)
 shapiro.test(diet.data$x1)
 shapiro.test(diet.data$x2)
 shapiro.test(diet.data$x3)
+
+boxplot(diet.data)
+
+stack(diet.data)
 ```
 We are going to compare them two by two. For all three columns, we don't reject null hypothesis that they are normally distributed.
 
